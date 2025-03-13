@@ -3,5 +3,3 @@
 -- Add any additional options here
 
 vim.g.mapleader = ","
-vim.opt.background = "dark"
-vim.cmd("colorscheme solarized8")
