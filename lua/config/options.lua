@@ -3,3 +3,8 @@
 -- Add any additional options here
 
 vim.g.mapleader = ","
+
+-- Vim Slime
+vim.g.slime_target = "tmux"
+vim.g.slime_cell_delimiter = "#%%"
+vim.g.slime_no_mappings = 1
