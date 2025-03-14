@@ -64,4 +64,17 @@ return {
       --keys[#keys + 1] = { "H", "<cmd>echo 'hello'<cr>" }
     end,
   },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    cmd = "Neotree",
+    keys = {
+      {
+        "<C-n>",
+        function()
+          require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root() })
+        end,
+        desc = "Explorer NeoTree (Root Dir)",
+      },
+    },
+  },
 }
