@@ -58,9 +58,6 @@ return {
     "lifepillar/vim-solarized8",
   },
   {
-    "majutsushi/tagbar",
-  },
-  {
     "neovim/nvim-lspconfig",
     opts = function()
       local keys = require("lazyvim.plugins.lsp.keymaps").get()

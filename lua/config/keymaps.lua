@@ -22,5 +22,3 @@ vim.api.nvim_set_keymap("n", "<C-c>v", "<Plug>SlimeConfig<CR>", { noremap = true
 -- Need to figure out an alternative to this
 --vim.api.nvim_set_keymap("n", "<leader>s", "<Plug>SlimeSendCell", { noremap = true, silent = true })
 
--- Map F8 to Tagbar
-vim.api.nvim_set_keymap("n", "<F8>", ":TagbarToggle<CR>", { noremap = true, silent = true })
