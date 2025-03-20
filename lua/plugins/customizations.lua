@@ -59,23 +59,24 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    opts = function()
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      -- change a keymap
-      keys[#keys + 1] = { "<C-a>", "<cmd>ClangdSwitchSourceHeader<cr>" }
-      keys[#keys + 1] = {
-        "<C-m>",
-        function()
-          Snacks.picker.lsp_workspace_symbols({ filter = LazyVim.config.kind_filter })
-        end,
-        desc = "LSP Workspace Symbols",
-        has = "workspace/symbols",
+    opts = {
+      servers = {
+        clangd = {
+          mason = false, -- this just doesn't work anywhere other than macos
+          keys = {
+            { "<C-a>", "<cmd>ClangdSwitchSourceHeader<cr>" },
+            {
+              "<C-m>",
+              function()
+                Snacks.picker.lsp_workspace_symbols({ filter = LazyVim.config.kind_filter })
+              end,
+              desc = "LSP Workspace Symbols",
+              has = "workspace/symbols",
+            }
+          },
+        }
       }
-      -- disable a keymap
-      --keys[#keys + 1] = { "K", false }
-      -- add a keymap
-      --keys[#keys + 1] = { "H", "<cmd>echo 'hello'<cr>" }
-    end,
+    }
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
