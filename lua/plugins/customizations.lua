@@ -60,6 +60,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+      autoformat = false,
       servers = {
         clangd = {
           mason = false, -- this just doesn't work anywhere other than macos
@@ -72,11 +73,11 @@ return {
               end,
               desc = "LSP Workspace Symbols",
               has = "workspace/symbols",
-            }
+            },
           },
-        }
-      }
-    }
+        },
+      },
+    },
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
