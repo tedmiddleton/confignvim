@@ -4,6 +4,7 @@
 
 vim.g.autoformat = false
 vim.g.mapleader = ","
+vim.opt.wrapscan = false
 
 -- Vim Slime
 vim.g.slime_target = "tmux"
