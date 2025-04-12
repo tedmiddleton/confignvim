@@ -6,6 +6,9 @@ vim.g.autoformat = false
 vim.g.mapleader = ","
 vim.opt.wrapscan = false
 
+-- LazyVim auto format
+--vim.g.autoformat = false
+
 -- Vim Slime
 vim.g.slime_target = "tmux"
 vim.g.slime_cell_delimiter = "#%%"
