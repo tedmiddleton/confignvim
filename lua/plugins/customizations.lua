@@ -14,7 +14,7 @@ return {
         auto_insert_mode = true,
         question_header = "  " .. user .. " ",
         answer_header = "  Copilot ",
-        model = "o1",
+        model = "gemini-2.0-flash-001",
         window = {
           width = 0.4,
         },
@@ -107,6 +107,29 @@ return {
           require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root() })
         end,
         desc = "Explorer NeoTree (Root Dir)",
+      },
+    },
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        cpp = { "clang-format" },
+        c = { "clang-format" },
+        h = { "clang-format" },
+      },
+      formatters = {
+        -- add any custom formatters here
+        -- prettier = {
+        --   command = "prettier",
+        --   args = { "--stdin-filepath", "$FILENAME" },
+        -- },
+        --clang_format = {
+        --  command = "clang-format",
+        --  stdin = true,
+        --  --prepend_args = { "--style=Microsoft" },
+        --  args = { "--assume-filename", "$FILENAME" },
+        --},
       },
     },
   },
