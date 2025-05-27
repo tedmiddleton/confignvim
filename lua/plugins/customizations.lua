@@ -74,6 +74,7 @@ return {
   },
   {
     "lifepillar/vim-solarized8",
+    branch = "neovim"
   },
   {
     "neovim/nvim-lspconfig",
