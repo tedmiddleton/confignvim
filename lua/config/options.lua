@@ -5,6 +5,8 @@
 vim.g.autoformat = false
 vim.g.mapleader = ","
 vim.opt.wrapscan = false
+vim.opt.textwidth = 80
+--vim.opt.smartindent = false
 
 -- LazyVim auto format
 --vim.g.autoformat = false

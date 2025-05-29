@@ -14,7 +14,26 @@ return {
         auto_insert_mode = true,
         question_header = "  " .. user .. " ",
         answer_header = "  Copilot ",
-        model = "gemini-2.0-flash-001",
+        --model = "claude-3.5-sonnet"
+        --model = "claude-3.7-sonnet"
+        --model = "claude-3.7-sonnet-thought"
+        --model = "claude-sonnet-4",
+        --model = "gemini-2.0-flash"
+        --model = "gemini-2.0-flash-001"
+        --model = "gemini-2.0-pro"
+        --model = "gemini-2.5-pro"
+        --model = "gpt-3.5-turbo"
+        --model = "gpt-4"
+        --model = "gpt-4-0125-preview"
+        --model = "gpt-4.1"
+        --model = "gpt-4-turbo"
+        --model = "gpt-4o"
+        --model = "gpt-4o-mini"
+        --model = "o1-mini"
+        --model = "o1-ga"
+        --model = "o3-mini"
+        --model = "gpt-4.5"
+        model = "claude-sonnet-4",
         window = {
           width = 0.4,
         },
@@ -110,6 +129,21 @@ return {
         desc = "Explorer NeoTree (Root Dir)",
       },
     },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    --enabled = false,
+    opts = {
+      indent = {
+        enable = true,
+        disable = {
+          "python", -- disable python indenting
+          "cpp",    -- disable cpp indenting
+          "c",      -- disable c indenting
+          "h",      -- disable h indenting
+        }
+      }
+    }
   },
   {
     "stevearc/conform.nvim",
