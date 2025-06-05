@@ -33,7 +33,7 @@ return {
         --model = "o1-ga"
         --model = "o3-mini"
         --model = "gpt-4.5"
-        model = "claude-sonnet-4",
+        model = "gpt-4o:openai",
         window = {
           width = 0.4,
         },
