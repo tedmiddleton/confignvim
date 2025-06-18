@@ -5,6 +5,8 @@ if lazyvim_docs then
 end
 
 require('lspconfig').clangd.setup{}
+local context = require('CopilotChat.context')
+local utils = require('CopilotChat.utils')
 
 return {
   {
@@ -118,6 +120,68 @@ return {
           --copilot_embeddings = {
           --},
         },
+
+        contexts = {
+
+          birthday = {
+            input = function(callback)
+              vim.ui.select({ 'user', 'napoleon' }, {
+                prompt = 'Select birthday> ',
+              }, callback)
+            end,
+            resolve = function(input)
+              return {
+                {
+                  content = input .. ' birthday info',
+                  filename = input .. '_birthday',
+                  filetype = 'text',
+                }
+              }
+            end
+          },
+
+          allfiles = {
+            description = 'Includes all non-hidden files in the current workspace in chat context. Supports input (glob pattern).',
+
+            input = function(callback)
+              vim.ui.input({
+                prompt = 'Enter glob> ',
+              }, callback)
+            end,
+
+            resolve = function(input, source)
+              local files = utils.scan_dir(source.cwd(), {
+                glob = input,
+              })
+
+              utils.schedule_main()
+              files = vim.tbl_filter(
+                function(file)
+                  return file.ft ~= nil
+                end,
+                vim.tbl_map(function(file)
+                  return {
+                    name = utils.filepath(file),
+                    ft = utils.filetype(file),
+                  }
+                end, files)
+              )
+
+              return vim
+                .iter(files)
+                :map(function(file)
+                  return context.get_file(file.name, file.ft)
+                end)
+                :filter(function(file_data)
+                  return file_data ~= nil
+                end)
+                :totable()
+            end,
+
+          },
+
+        },
+
       }
     end,
   },
