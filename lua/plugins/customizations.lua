@@ -4,6 +4,8 @@ if lazyvim_docs then
   vim.g.lazyvim_picker = "snacks"
 end
 
+require('lspconfig').clangd.setup{}
+
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
@@ -174,6 +176,14 @@ return {
     "lifepillar/vim-solarized8",
     branch = "neovim"
   },
+  {   
+    "mason-org/mason.nvim", 
+    version = "^1.0.0" 
+  },
+  { 
+    "mason-org/mason-lspconfig.nvim", 
+    version = "^1.0.0" 
+  },
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -181,6 +191,7 @@ return {
       servers = {
         clangd = {
           mason = false, -- this just doesn't work anywhere other than macos
+          filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
           keys = {
             { "<C-a>", "<cmd>ClangdSwitchSourceHeader<cr>" },
             {
