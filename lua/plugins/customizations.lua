@@ -10,180 +10,123 @@ local utils = require('CopilotChat.utils')
 
 return {
   {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    opts = function()
-      local user = vim.env.USER or "User"
-      user = user:sub(1, 1):upper() .. user:sub(2)
-      return {
-        auto_insert_mode = true,
-        question_header = "  " .. user .. " ",
-        answer_header = "  Copilot ",
-        --model = "claude-3.5-sonnet"
-        --model = "claude-3.7-sonnet"
-        --model = "claude-3.7-sonnet-thought"
-        --model = "claude-sonnet-4",
-        --model = "gemini-2.0-flash"
-        --model = "gemini-2.0-flash-001"
-        --model = "gemini-2.0-pro"
-        --model = "gemini-2.5-pro"
-        --model = "gpt-3.5-turbo"
-        --model = "gpt-4"
-        --model = "gpt-4-0125-preview"
-        --model = "gpt-4.1"
-        --model = "gpt-4-turbo"
-        --model = "gpt-4o"
-        --model = "gpt-4o-mini"
-        --model = "o1-mini"
-        --model = "o1-ga"
-        --model = "o3-mini"
-        --model = "gpt-4.5"
-        model = "gpt-4o:openai",
-        window = {
-          width = 0.4,
-        },
-
-        providers = {
-
-          openai = {
-            prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
-            prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
-
-            get_url = function() return "https://api.openai.com/v1/chat/completions" end,
-
-            get_headers = function()
-              local api_key = assert(os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY env var not set")
-              return {
-                Authorization = "Bearer " .. api_key,
-                ["Content-Type"] = "application/json",
-              }
-            end,
-
-            get_models = function(headers)
-              local response, err =
-                require("CopilotChat.utils").curl_get("https://api.openai.com/v1/models", {
-                  headers = headers,
-                  json_response = true,
-                })
-              if err then error(err) end
-              return vim
-                .iter(response.body.data)
-                :filter(function(model)
-                  local exclude_patterns = {
-                    "audio",
-                    "babbage",
-                    "dall%-e",
-                    "davinci",
-                    "embedding",
-                    "image",
-                    "moderation",
-                    "realtime",
-                    "transcribe",
-                    "tts",
-                    "whisper",
-                  }
-                  for _, pattern in ipairs(exclude_patterns) do
-                    if model.id:match(pattern) then return false end
-                  end
-                  return true
-                end)
-                :map(
-                  function(model)
-                    return {
-                      id = model.id,
-                      name = model.id,
-                    }
-                  end
-                )
-                :totable()
-            end,
-
-            embed = function(inputs, headers)
-              local response, err =
-                require("CopilotChat.utils").curl_post("https://api.openai.com/v1/embeddings", {
-                  headers = headers,
-                  json_request = true,
-                  json_response = true,
-                  body = {
-                    model = "text-embedding-3-small",
-                    input = inputs,
-                  },
-                })
-              if err then error(err) end
-              return response.body.data
-            end,
-          },
-
-          --copilot = {
-          --},
-          --github_models = {
-          --},
-          --copilot_embeddings = {
-          --},
-        },
-
-        contexts = {
-
-          birthday = {
-            input = function(callback)
-              vim.ui.select({ 'user', 'napoleon' }, {
-                prompt = 'Select birthday> ',
-              }, callback)
-            end,
-            resolve = function(input)
-              return {
-                {
-                  content = input .. ' birthday info',
-                  filename = input .. '_birthday',
-                  filetype = 'text',
-                }
-              }
-            end
-          },
-
-          allfiles = {
-            description = 'Includes all non-hidden files in the current workspace in chat context. Supports input (glob pattern).',
-
-            input = function(callback)
-              vim.ui.input({
-                prompt = 'Enter glob> ',
-              }, callback)
-            end,
-
-            resolve = function(input, source)
-              local files = utils.scan_dir(source.cwd(), {
-                glob = input,
-              })
-
-              utils.schedule_main()
-              files = vim.tbl_filter(
-                function(file)
-                  return file.ft ~= nil
-                end,
-                vim.tbl_map(function(file)
-                  return {
-                    name = utils.filepath(file),
-                    ft = utils.filetype(file),
-                  }
-                end, files)
-              )
-
-              return vim
-                .iter(files)
-                :map(function(file)
-                  return context.get_file(file.name, file.ft)
-                end)
-                :filter(function(file_data)
-                  return file_data ~= nil
-                end)
-                :totable()
-            end,
-
-          },
-
-        },
-
-      }
+    "CopilotC-Ide/CopilotChat.nvim",
+    enabled = false,
+  },
+  {
+    "yetone/avante.nvim",
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    -- ⚠️ must add this setting! ! !
+    build = function()
+      -- conditionally use the correct build system for the current OS
+      if vim.fn.has("win32") == 1 then
+        return "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+      else
+        return "make"
+      end
     end,
+    event = "VeryLazy",
+    version = false, -- Never set this value to "*"! Never!
+    ---@module 'avante'
+    ---@type avante.Config
+    opts = {
+      -- add any opts here
+      -- for example
+      provider = "claude",
+      providers = {
+        claude = {
+          endpoint = "https://api.anthropic.com",
+          model = "claude-sonnet-4-20250514",
+          timeout = 30000, -- Timeout in milliseconds
+            extra_request_body = {
+              temperature = 0.75,
+              max_tokens = 20480,
+            },
+        },
+      },
+    },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "echasnovski/mini.pick", -- for file_selector provider mini.pick
+      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+      "ibhagwan/fzf-lua", -- for file_selector provider fzf
+      "stevearc/dressing.nvim", -- for input provider dressing
+      "folke/snacks.nvim", -- for input provider snacks
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "zbirenbaum/copilot.lua", -- for providers='copilot'
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+
+    keys = {
+      { "<c-s>", "<CR>", ft = "avante-chat", desc = "Submit Prompt", remap = true },
+      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
+      {
+        "<leader>aa",
+        function()
+          return require("avante").toggle()
+        end,
+        desc = "Toggle (Avante)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>ax",
+        function()
+          return require("avante").reset()
+        end,
+        desc = "Clear (Avante)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>aq",
+        function()
+          vim.ui.input({
+            prompt = "Quick Chat: ",
+          }, function(input)
+            if input ~= "" then
+              require("avante").ask(input)
+            end
+          end)
+        end,
+        desc = "Quick Chat (Avante)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>ap",
+        function()
+          require("avante").select_prompt()
+        end,
+        desc = "Prompt Actions (Avante)",
+        mode = { "n", "v" },
+      },
+    },
   },
   {
     "folke/noice.nvim",
@@ -207,6 +150,9 @@ return {
       scroll = {
         enabled = false, -- Disable scroll animation
       },
+      --notifier = {
+      --  enabled = false, -- Enable notifications
+      --},
       indent = {
         enabled = false,
       }
