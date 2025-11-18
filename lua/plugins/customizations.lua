@@ -186,6 +186,18 @@ return {
     opts = {
       autoformat = false,
       servers = {
+        vtsls = {
+          init_options = {
+            -- Disable formatting provided by vtsls
+            disableFormatting = true,
+          },
+          on_attach = function(client, bufnr)
+            -- Ensure client-side formatting is disabled
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
+            -- ... other on_attach logic
+          end,
+        },
         clangd = {
           mason = false, -- this just doesn't work anywhere other than macos
           filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
@@ -239,6 +251,13 @@ return {
         cpp = { "clang-format" },
         c = { "clang-format" },
         h = { "clang-format" },
+        typescript = { "prettier" },
+        javascript = { "prettier" },
+        typescriptreact = { "prettier" },
+        javascriptreact = { "prettier" },
+        css = { "prettier" },
+        html = { "prettier" },
+        json = { "prettier" },
       },
       formatters = {
         -- add any custom formatters here
